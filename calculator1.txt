@@ -134,4 +134,184 @@ main() # ❌ no `if __name__ == "__main__":` guard
 
 -------------------------------------------------------------------------------------------------------------------------------------
 
+                                       --:Library management code:--
+
+
+from datetime import datetime
+
+class Book:
+    """Represents a single book in the library."""
+    def __init__(self, book_id, title, author, copies=1):
+        self.book_id = book_id
+        self.title = title
+        self.author = author
+        self.copies = copies
+        self.borrowed_by = []  # list of member IDs
+
+    def __str__(self):
+        return f"[{self.book_id}] {self.title} by {self.author} (Available: {self.copies})"
+
+
+class Member:
+    """Represents a library member."""
+    def __init__(self, member_id, name):
+        self.member_id = member_id
+        self.name = name
+        self.borrowed_books = []  # list of book IDs
+
+    def __str__(self):
+        return f"{self.member_id}: {self.name}"
+
+
+class Library:
+    """Main Library system managing books and members."""
+    def __init__(self):
+        self.books = {}   # {book_id: Book}
+        self.members = {} # {member_id: Member}
+
+    def add_book(self, book_id, title, author, copies=1):
+        if book_id in self.books:
+            self.books[book_id].copies += copies
+            print(f"✅ Added {copies} more copies of '{title}'.")
+        else:
+            self.books[book_id] = Book(book_id, title, author, copies)
+            print(f"📘 Book '{title}' added successfully.")
+
+    def add_member(self, member_id, name):
+        if member_id in self.members:
+            print(f"⚠️ Member ID {member_id} already exists.")
+        else:
+            self.members[member_id] = Member(member_id, name)
+            print(f"👤 Member '{name}' added successfully.")
+
+    def borrow_book(self, member_id, book_id):
+        if member_id not in self.members:
+            print("❌ Member not found.")
+            return
+        if book_id not in self.books:
+            print("❌ Book not found.")
+            return
+
+        member = self.members[member_id]
+        book = self.books[book_id]
+
+        if book.copies == 0:
+            print(f"❌ '{book.title}' is currently not available.")
+            return
+
+        book.copies -= 1
+        book.borrowed_by.append(member_id)
+        member.borrowed_books.append(book_id)
+        print(f"📚 '{book.title}' borrowed by {member.name} on {datetime.now().strftime('%Y-%m-%d')}.")
+
+    def return_book(self, member_id, book_id):
+        if member_id not in self.members or book_id not in self.books:
+            print("❌ Invalid member or book ID.")
+            return
+
+        member = self.members[member_id]
+        book = self.books[book_id]
+
+        if book_id not in member.borrowed_books:
+            print(f"⚠️ {member.name} didn’t borrow '{book.title}'.")
+            return
+
+        member.borrowed_books.remove(book_id)
+        book.borrowed_by.remove(member_id)
+        book.copies += 1
+        print(f"✅ '{book.title}' returned by {member.name}.")
+
+    def list_books(self):
+        if not self.books:
+            print("📂 No books in inventory.")
+            return
+        print("\n📚 Library Inventory:")
+        for book in self.books.values():
+            print(book)
+
+    def list_members(self):
+        if not self.members:
+            print("👥 No members registered.")
+            return
+        print("\n👥 Library Members:")
+        for member in self.members.values():
+            print(member)
+
+
+# --- Example Usage ---
+if __name__ == "__main__":
+    lib = Library()
+
+    # Adding books and members
+    lib.add_book(1, "Harry Potter", "J.K. Rowling", 3)
+    lib.add_book(2, "1984", "George Orwell", 2)
+    lib.add_member(101, "Alice")
+    lib.add_member(102, "Bob")
+
+    # Borrowing and returning
+    lib.borrow_book(101, 1)
+    lib.borrow_book(102, 2)
+    lib.return_book(101, 1)
+
+    # Listing
+    lib.list_books()
+    lib.list_members()
+
+
+
+                                             --:Faulty code:--
+
+# ❌ No docstrings, poor formatting, inconsistent naming
+
+class book:    # ❌ class name not capitalized
+ def __init__(self,id,title,author,copies=1): # ❌ inconsistent indentation, no spaces around '='
+  self.id=id; self.title=title; self.author=author; self.copies=copies; self.borrowed=[] # ❌ multiple statements on one line
+
+ def __str__(self): return f"{self.title}-{self.author}-{self.copies}" # ❌ one-liner methods
+
+
+class member:  # ❌ lowercase class name
+ def __init__(self,mid,name): self.mid=mid; self.name=name; self.borrowed=[]
+
+
+class lib:  # ❌ meaningless class name, bad naming
+ def __init__(self): self.books={}; self.members={}
+
+ def addBook(self,id,title,author,copies=1):   # ❌ inconsistent camelCase naming
+  if id in self.books: self.books[id].copies+=copies; print("copies added")
+  else:self.books[id]=book(id,title,author,copies); print("book added")  # ❌ inconsistent indentation
+
+ def addMember(self,mid,name):
+  if mid in self.members: print("exists")
+  else:self.members[mid]=member(mid,name); print("member added")
+
+ def borrow(self,mid,bid):
+  b=self.books[bid] # ❌ no check if ID exists → KeyError
+  m=self.members[mid] # ❌ may also raise KeyError if mid invalid
+  if b.copies<=0: print("not available"); return
+  b.copies-=1; b.borrowed.append(mid); m.borrowed.append(bid); print(m.name,"borrowed",b.title) # ❌ long line, inline logic
+
+ def returnBook(self,mid,bid):
+  b=self.books[bid]; m=self.members[mid]
+  if bid not in m.borrowed: print("not borrowed by user");return
+  m.borrowed.remove(bid);b.borrowed.remove(mid);b.copies+=1;print("returned")
+
+ def list(self):  # ❌ method name collides with built-in `list`
+  for k,v in self.books.items(): print(v.id,v.title,v.copies) # ❌ missing space after commas
+
+
+# ❌ No __main__ guard, immediate execution
+L=lib()
+L.addBook(1,"Python Crash Course","Eric",2)
+L.addBook(2,"1984","George Orwell",1)
+L.addMember(1,"Aman")
+L.addMember(2,"Bob")
+
+L.borrow(1,1)
+L.borrow(2,3)   # ❌ Invalid book ID — will crash (KeyError)
+L.returnBook(1,2) # ❌ Return without borrow — inconsistent state
+
+L.list()
+
+
 
