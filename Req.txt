@@ -1,0 +1,30 @@
+Title name:
+Application Development Code Review Assistant
+
+Team
+
+Problem Statement:
+
+Developers need quick feedback on code quality, style, and potential bugs during application development to improve productivity.
+
+Steps:
+
+Gather sample code snippets and coding standards documentation.
+
+Develop the Al agent to analyze code for style and quality issues.
+
+Identify potential bugs and suggest improvements.
+
+Explain best practices in the feedback.
+
+Test the agent with diverse code samples.
+
+Step-1
+
+Data Requirements:
+
+Sample code snippets in Python or other languages, coding standards documentation.
+
+Expected Output:
+
+A detailed code review report with comments and suggestions in text format.
