@@ -1,0 +1,137 @@
+import math
+
+class Calculator:
+    def add(self, a, b):
+        return a + b
+
+    def subtract(self, a, b):
+        return a - b
+
+    def multiply(self, a, b):
+        return a * b
+
+    def divide(self, a, b):
+        # ❌ No check for division by zero
+        return a / b
+
+    def power(self, a, b):
+        return math.pow(a, b)
+
+    def square_root(self, a):
+        # ❌ No check for negative input
+        return math.sqrt(a)
+
+
+def main():
+    calc = Calculator()
+
+    print("=== Buggy Calculator ===")
+    print("Operations: +, -, *, /, ^, sqrt, exit")
+
+    while True:
+        op = input("\nEnter operation: ")
+
+        if op == "exit":
+            print("Bye!")
+            break
+
+        # ❌ No validation — assumes user enters numbers correctly
+        num1 = float(input("Enter first number: "))
+
+        # ❌ 'sqrt' uses only one argument, but we're still asking for two
+        if op != "sqrt":
+            num2 = float(input("Enter second number: "))
+
+        # ❌ No error handling — can crash anytime
+        if op == "+":
+            print("Result:", calc.add(num1, num2))
+        elif op == "-":
+            print("Result:", calc.subtract(num1, num2))
+        elif op == "*":
+            print("Result:", calc.multiply(num1, num2))
+        elif op == "/":
+            print("Result:", calc.divide(num1, num2))  # will crash on divide by zero
+        elif op == "^":
+            print("Result:", calc.power(num1, num2))
+        elif op == "sqrt":
+            print("Result:", calc.square_root(num1))  # will crash on negative numbers
+        else:
+            print("Invalid operation!")  # ❌ won't stop invalid math logic
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+
+Time Zone converter
+
+                      -:Correct code:-
+
+from datetime import datetime
+import pytz
+
+def show_time_in_timezone(timezone_name):
+    try:
+        timezone = pytz.timezone(timezone_name)
+    except pytz.UnknownTimeZoneError:
+        print(f"❌ Invalid timezone: {timezone_name}")
+        return
+
+    local_time = datetime.now(timezone)
+    print(f"🕓 Current time in {timezone_name}: {local_time.strftime('%Y-%m-%d %H:%M:%S')}")
+
+def main():
+    print("==== Time Zone Converter ====")
+    print("Example zones: Asia/Kolkata, America/New_York, Europe/London, Australia/Sydney")
+    print("Type 'list' to see all available zones")
+    print("Type 'exit' to quit\n")
+
+    while True:
+        zone = input("Enter timezone: ").strip()
+
+        if zone.lower() == "exit":
+            print("Goodbye!")
+            break
+        elif zone.lower() == "list":
+            print("Some common zones:")
+            print("Asia/Kolkata, Asia/Dubai, Europe/London, America/New_York, America/Los_Angeles, Australia/Sydney, Africa/Johannesburg")
+            continue
+
+        show_time_in_timezone(zone)
+
+if __name__ == "__main__":
+    main()
+
+
+
+                      -:Faulty code:-
+
+import datetime,pytz # ❌ multiple imports on one line (bad practice)
+
+def t(z):  # ❌ non-descriptive function name
+ tz=pytz.timezone(z)   # ❌ inconsistent indentation, unclear variable name
+ x=datetime.datetime.now(tz) # ❌ unspaced operators
+ print("time in",z,"is",x) # ❌ improper print formatting
+
+def main():     # ❌ lowercase function name for entry point is ok, but formatting is off
+ print("enter tz name OR quit") # ❌ unclear instructions
+ while True:
+  i=input(">>> ") # ❌ one-letter variable names, bad naming
+  if i=="quit":break   # ❌ inline control flow, no spacing
+  elif len(i)==0:print("nothing entered") # ❌ bad structure, no else block
+  else:
+   try:t(i) # ❌ bad indentation + inline try block
+   except:print("something wrong lol") # ❌ catching all exceptions with no specificity
+
+main() # ❌ no `if __name__ == "__main__":` guard
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+
