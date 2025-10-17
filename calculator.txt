@@ -1,0 +1,63 @@
+import math
+
+class Calculator:
+    def add(self, a, b):
+        return a + b
+
+    def subtract(self, a, b):
+        return a - b
+
+    def multiply(self, a, b):
+        return a * b
+
+    def divide(self, a, b):
+        # ❌ No check for division by zero
+        return a / b
+
+    def power(self, a, b):
+        return math.pow(a, b)
+
+    def square_root(self, a):
+        # ❌ No check for negative input
+        return math.sqrt(a)
+
+
+def main():
+    calc = Calculator()
+
+    print("=== Buggy Calculator ===")
+    print("Operations: +, -, *, /, ^, sqrt, exit")
+
+    while True:
+        op = input("\nEnter operation: ")
+
+        if op == "exit":
+            print("Bye!")
+            break
+
+        # ❌ No validation — assumes user enters numbers correctly
+        num1 = float(input("Enter first number: "))
+
+        # ❌ 'sqrt' uses only one argument, but we're still asking for two
+        if op != "sqrt":
+            num2 = float(input("Enter second number: "))
+
+        # ❌ No error handling — can crash anytime
+        if op == "+":
+            print("Result:", calc.add(num1, num2))
+        elif op == "-":
+            print("Result:", calc.subtract(num1, num2))
+        elif op == "*":
+            print("Result:", calc.multiply(num1, num2))
+        elif op == "/":
+            print("Result:", calc.divide(num1, num2))  # will crash on divide by zero
+        elif op == "^":
+            print("Result:", calc.power(num1, num2))
+        elif op == "sqrt":
+            print("Result:", calc.square_root(num1))  # will crash on negative numbers
+        else:
+            print("Invalid operation!")  # ❌ won't stop invalid math logic
+
+
+if __name__ == "__main__":
+    main()
